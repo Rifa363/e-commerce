@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Voucher - Admin RiRa Cakes</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-logo">RiRa <span>Cakes</span></div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i> Produk</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Pesanan</a></li>
+                <li><a href="chat.html" data-chat-unread><i class="fas fa-comments"></i> Chat Customer</a></li>
+                <li><a href="vouchers.html" class="active"><i class="fas fa-ticket-alt"></i> Voucher</a></li>
+                <li><a href="custom-cakes.html"><i class="fas fa-birthday-cake"></i> Custom Cake</a></li>
+                <li><a href="reviews.html"><i class="fas fa-star"></i> Ulasan</a></li>
+                <li><a href="../index.html"><i class="fas fa-globe"></i> Lihat Website</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <div class="topbar">
+                <h1>Kelola Voucher Promo</h1>
+                <button class="btn btn-primary" id="newVoucher"><i class="fas fa-plus"></i> Voucher Baru</button>
+            </div>
+            <div class="card">
+                <p id="voucherMessage" role="status" style="margin-bottom:15px;"></p>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kode</th><th>Diskon</th><th>Minimum Belanja</th><th>Masa Berlaku</th>
+                                <th>Penggunaan</th><th>Status</th><th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vouchersTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="voucherModal">
+        <div class="modal-box">
+            <h2 id="voucherModalTitle">Voucher Baru</h2>
+            <form id="voucherForm">
+                <input type="hidden" id="voucherId">
+                <div class="form-group">
+                    <label for="voucherCode">Kode voucher</label>
+                    <input id="voucherCode" required minlength="3" maxlength="30" pattern="[A-Za-z0-9_-]+" autocomplete="off">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="voucherType">Jenis diskon</label>
+                        <select id="voucherType" required>
+                            <option value="percentage">Persentase (%)</option>
+                            <option value="fixed">Nominal (Rp)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="voucherValue">Nilai diskon</label>
+                        <input id="voucherValue" type="number" min="1" step="1" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="voucherMinimum">Minimum belanja (Rp)</label>
+                    <input id="voucherMinimum" type="number" min="0" step="1" value="0" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="voucherStarts">Mulai berlaku (opsional)</label>
+                        <input id="voucherStarts" type="datetime-local">
+                    </div>
+                    <div class="form-group">
+                        <label for="voucherExpires">Berakhir (opsional)</label>
+                        <input id="voucherExpires" type="datetime-local">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="voucherLimit">Batas pemakaian (kosong = tanpa batas)</label>
+                    <input id="voucherLimit" type="number" min="1" step="1">
+                </div>
+                <label style="display:flex;align-items:center;gap:8px;margin-bottom:15px;">
+                    <input id="voucherActive" type="checkbox" checked style="width:auto;"> Aktif
+                </label>
+                <p id="voucherFormMessage" role="status" style="margin-bottom:12px;"></p>
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button type="button" class="btn" id="cancelVoucher" style="background:#eee;">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="saveVoucher">Simpan Voucher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const VOUCHER_API = '../api/admin/vouchers.php';
+        let vouchers = [];
+
+        const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[char]);
+        const formatRupiah = (value) => new Intl.NumberFormat('id-ID', {
+            style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+        }).format(Number(value) || 0);
+        const dateInputValue = (value) => value ? value.replace(' ', 'T').slice(0, 16) : '';
+
+        async function requestVoucher(url = VOUCHER_API, options = {}) {
+            const response = await fetch(url, { credentials: 'include', ...options });
+            const result = await response.json();
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = '../login.html';
+                throw new Error('Silakan masuk sebagai admin.');
+            }
+            if (!response.ok || !result.success) throw new Error(result.message || 'Voucher gagal diproses.');
+            return result;
+        }
+
+        async function loadVouchers() {
+            const result = await requestVoucher();
+            vouchers = result.data;
+            document.getElementById('vouchersTable').innerHTML = vouchers.map((voucher) => {
+                const discount = voucher.discount_type === 'percentage'
+                    ? `${Number(voucher.discount_value)}%`
+                    : formatRupiah(voucher.discount_value);
+                const period = [voucher.starts_at, voucher.expires_at]
+                    .map((date) => date ? new Date(date.replace(' ', 'T')).toLocaleString('id-ID') : 'Tanpa batas')
+                    .join(' – ');
+                const limit = voucher.usage_limit === null
+                    ? `${voucher.usage_count} / tanpa batas`
+                    : `${voucher.usage_count} / ${voucher.usage_limit}`;
+                return `<tr>
+                    <td><strong>${escapeHtml(voucher.code)}</strong></td>
+                    <td>${escapeHtml(discount)}</td>
+                    <td>${formatRupiah(voucher.minimum_order)}</td>
+                    <td>${escapeHtml(period)}</td>
+                    <td>${escapeHtml(limit)}</td>
+                    <td><span class="badge ${Number(voucher.is_active) ? 'badge-completed' : 'badge-cancelled'}">${Number(voucher.is_active) ? 'Aktif' : 'Nonaktif'}</span></td>
+                    <td style="white-space:nowrap;">
+                        <button class="btn btn-sm btn-info" type="button" data-edit-voucher="${Number(voucher.id)}">Edit</button>
+                        ${Number(voucher.is_active) ? `<button class="btn btn-sm btn-danger" type="button" data-disable-voucher="${Number(voucher.id)}">Nonaktifkan</button>` : ''}
+                    </td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="7" style="text-align:center;color:#999;">Belum ada voucher.</td></tr>';
+        }
+
+        function closeVoucherModal() {
+            document.getElementById('voucherModal').classList.remove('active');
+        }
+
+        function openVoucherModal(voucher = null) {
+            const form = document.getElementById('voucherForm');
+            form.reset();
+            document.getElementById('voucherFormMessage').textContent = '';
+            document.getElementById('voucherModalTitle').textContent = voucher ? 'Edit Voucher' : 'Voucher Baru';
+            document.getElementById('voucherId').value = voucher?.id || '';
+            document.getElementById('voucherCode').value = voucher?.code || '';
+            document.getElementById('voucherType').value = voucher?.discount_type || 'percentage';
+            document.getElementById('voucherValue').value = voucher?.discount_value || '';
+            document.getElementById('voucherMinimum').value = voucher?.minimum_order ?? 0;
+            document.getElementById('voucherStarts').value = dateInputValue(voucher?.starts_at);
+            document.getElementById('voucherExpires').value = dateInputValue(voucher?.expires_at);
+            document.getElementById('voucherLimit').value = voucher?.usage_limit ?? '';
+            document.getElementById('voucherActive').checked = voucher ? Boolean(Number(voucher.is_active)) : true;
+            document.getElementById('voucherModal').classList.add('active');
+        }
+
+        document.getElementById('newVoucher').addEventListener('click', () => openVoucherModal());
+        document.getElementById('cancelVoucher').addEventListener('click', closeVoucherModal);
+        document.getElementById('vouchersTable').addEventListener('click', async (event) => {
+            const editId = event.target.closest('[data-edit-voucher]')?.dataset.editVoucher;
+            const disableId = event.target.closest('[data-disable-voucher]')?.dataset.disableVoucher;
+            if (editId) openVoucherModal(vouchers.find((voucher) => Number(voucher.id) === Number(editId)));
+            if (disableId && confirm('Nonaktifkan voucher ini?')) {
+                try {
+                    await requestVoucher(VOUCHER_API, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: Number(disableId) })
+                    });
+                    await loadVouchers();
+                } catch (error) {
+                    document.getElementById('voucherMessage').textContent = error.message;
+                }
+            }
+        });
+
+        document.getElementById('voucherForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const id = document.getElementById('voucherId').value;
+            const payload = {
+                id: id ? Number(id) : undefined,
+                code: document.getElementById('voucherCode').value.trim().toUpperCase(),
+                discount_type: document.getElementById('voucherType').value,
+                discount_value: document.getElementById('voucherValue').value,
+                minimum_order: document.getElementById('voucherMinimum').value,
+                starts_at: document.getElementById('voucherStarts').value,
+                expires_at: document.getElementById('voucherExpires').value,
+                usage_limit: document.getElementById('voucherLimit').value,
+                is_active: document.getElementById('voucherActive').checked
+            };
+            try {
+                await requestVoucher(VOUCHER_API, {
+                    method: id ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                closeVoucherModal();
+                document.getElementById('voucherMessage').textContent = 'Voucher berhasil disimpan.';
+                await loadVouchers();
+            } catch (error) {
+                document.getElementById('voucherFormMessage').textContent = error.message;
+            }
+        });
+
+        loadVouchers().catch((error) => {
+            document.getElementById('voucherMessage').textContent = error.message;
+        });
+    </script>
+    <script src="../js/chat-unread.js" data-api="../api/chat.php"></script>
+</body>
+</html>

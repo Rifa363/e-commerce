@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat dengan RiRa Cakes</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="customer-orders-page">
+    <header>
+        <a href="index.html" class="logo">RiRa <span>Cakes</span></a>
+        <a href="index.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Kembali Belanja</a>
+    </header>
+    <main class="chat-page" data-api="api/chat.php" data-auth-api="api/auth.php" data-role="customer">
+        <h1>Chat dengan RiRa Cakes</h1>
+        <p class="orders-description">Tanyakan pesanan atau diskusikan custom cake langsung dengan tim kami.</p>
+        <div id="chatNotice" class="orders-message" role="status">Memuat percakapan...</div>
+        <section class="chat-panel" aria-label="Percakapan dengan RiRa Cakes">
+            <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+            <form id="chatForm" class="chat-compose">
+                <label class="visually-hidden" for="chatInput">Tulis pesan</label>
+                <textarea id="chatInput" maxlength="2000" rows="2" placeholder="Tulis pesan..."></textarea>
+                <label class="chat-attach-button btn" for="chatImage"><i class="fas fa-image"></i> Foto</label>
+                <input id="chatImage" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp">
+                <button type="submit" class="btn btn-primary" disabled><i class="fas fa-paper-plane"></i> Kirim</button>
+            </form>
+            <p id="chatImageStatus" class="chat-image-status" aria-live="polite">Format foto JPG, PNG, atau WEBP; maksimal 5 MB.</p>
+        </section>
+    </main>
+    <script src="js/chat.js"></script>
+</body>
+</html>

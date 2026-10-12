@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Cake Pre-Order - RiRa Cakes</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="customer-orders-page">
+    <header>
+        <a href="index.html" class="logo">RiRa <span>Cakes</span></a>
+        <div class="orders-header-actions">
+            <a href="chat.html" class="btn btn-primary" data-chat-unread><i class="fas fa-comments"></i> Chat</a>
+            <a href="index.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Kembali</a>
+        </div>
+    </header>
+    <main class="customer-orders custom-cake-page">
+        <h1>Custom Cake Pre-Order</h1>
+        <p class="orders-description">Ceritakan kue impian Anda. Pesanan perlu dijadwalkan minimal 48 jam sebelumnya. Tim kami akan mengonfirmasi desain dan harga melalui chat di aplikasi.</p>
+        <div class="custom-cake-layout">
+            <form id="customCakeForm" class="custom-cake-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cakeType">Jenis kue</label>
+                        <input id="cakeType" name="cake_type" maxlength="100" required placeholder="Contoh: Birthday cake">
+                    </div>
+                    <div class="form-group">
+                        <label for="servings">Jumlah porsi</label>
+                        <input id="servings" name="servings" type="number" min="1" max="200" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="flavor">Rasa utama</label>
+                        <input id="flavor" name="flavor" maxlength="100" required placeholder="Contoh: Cokelat">
+                    </div>
+                    <div class="form-group">
+                        <label for="filling">Isian (opsional)</label>
+                        <input id="filling" name="filling" maxlength="100" placeholder="Contoh: Strawberry">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="frosting">Frosting (opsional)</label>
+                        <input id="frosting" name="frosting" maxlength="100" placeholder="Contoh: Buttercream">
+                    </div>
+                    <div class="form-group">
+                        <label for="cakeMessage">Tulisan di kue (opsional)</label>
+                        <input id="cakeMessage" name="cake_message" maxlength="100">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventAt">Tanggal dan waktu acara</label>
+                    <input id="eventAt" name="event_at" type="datetime-local" required>
+                </div>
+                <div class="form-group">
+                    <label for="designDescription">Tema dan detail desain</label>
+                    <textarea id="designDescription" name="design_description" rows="4" minlength="10" maxlength="3000" required placeholder="Jelaskan warna, tema, dekorasi, atau referensi desain yang diinginkan."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="allergies">Alergi atau pantangan (opsional)</label>
+                    <textarea id="allergies" name="allergies" rows="2" maxlength="1000" placeholder="Contoh: tanpa kacang"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="budget">Anggaran (opsional)</label>
+                        <input id="budget" name="budget" type="number" min="0" step="1000" placeholder="Rp">
+                    </div>
+                    <div class="form-group">
+                        <label for="customerNotes">Catatan tambahan</label>
+                        <input id="customerNotes" name="customer_notes" maxlength="1000">
+                    </div>
+                </div>
+                <p id="customCakeMessage" role="status" class="orders-message"></p>
+                <a id="customCakeChatLink" class="btn btn-primary" href="chat.html" style="display:none;margin:0 0 16px;">
+                    <i class="fas fa-comments"></i> Lanjutkan di Chat
+                </a>
+                <button type="submit" id="customCakeSubmit" class="btn btn-primary">Kirim Permintaan Pre-Order</button>
+            </form>
+            <section class="custom-cake-history">
+                <h2>Pre-order Saya</h2>
+                <p id="customCakeHistoryMessage" role="status" class="orders-message">Memuat pre-order...</p>
+                <div id="customCakeHistoryList" class="customer-orders-list"></div>
+            </section>
+        </div>
+    </main>
+    <script src="js/custom-cake.js"></script>
+    <script src="js/chat-unread.js" data-api="api/chat.php"></script>
+</body>
+</html>

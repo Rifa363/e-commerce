@@ -1,0 +1,14 @@
+/vendor/
+/.vscode/
+.env
+.env.*
+
+/uploads/payment-proofs/*
+!/uploads/payment-proofs/.htaccess
+
+/uploads/chat-images/*
+!/uploads/chat-images/.htaccess
+
+*.log
+Thumbs.db
+Desktop.ini

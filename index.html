@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RiRa Cakes Manis Legit - Sajikan Manisnya Kebahagiaan</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <a href="#" class="logo">RiRa <span>Cakes</span></a>
+        <div class="nav-actions">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Cari kue favorit...">
+            </div>
+            <div class="icon-btn" id="profileBtn" title="Profil"><i class="fas fa-user"></i></div>
+            <a class="icon-btn" id="ordersHistoryLink" href="orders.html" title="Riwayat transaksi" style="display:none;">
+                <i class="fas fa-receipt"></i><span class="history-link-label">Riwayat</span>
+            </a>
+            <a class="icon-btn" href="chat.html" title="Chat dengan RiRa Cakes" data-chat-unread>
+                <i class="fas fa-comments"></i><span class="history-link-label">Chat</span>
+            </a>
+            <a class="icon-btn" href="custom-cake.html" title="Custom cake pre-order">
+                <i class="fas fa-birthday-cake"></i><span class="history-link-label">Custom Cake</span>
+            </a>
+            <div class="icon-btn" id="cartIcon" title="Keranjang">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartCount">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Sajikan Manisnya Kebahagiaan</h1>
+            <p>Kue premium yang diproduksi setiap hari dengan bahan-bahan pilihan terbaik.</p>
+            <a href="#catalog" class="btn btn-primary">Belanja Sekarang</a>
+            <div class="trust-badges">
+                <div class="badge-item"><i class="fas fa-award"></i> 100% Bahan Premium</div>
+                <div class="badge-item"><i class="fas fa-bread-slice"></i> Produksi Setiap Hari</div>
+                <div class="badge-item"><i class="fas fa-leaf"></i> Tanpa Pengawet</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY US -->
+    <section class="why-us">
+        <h2 class="section-title">Mengapa Memilih RiRa Cakes?</h2>
+        <div class="features-grid">
+            <div class="feature-card"><i class="fas fa-certificate"></i><h3>Bahan Premium & Halal</h3><p>Hanya bahan baku berkualitas tinggi dan tersertifikasi halal.</p></div>
+            <div class="feature-card"><i class="fas fa-hat-wizard"></i><h3>Pastry Chef Berpengalaman</h3><p>Dibuat oleh chef profesional dengan resep rahasia.</p></div>
+            <div class="feature-card"><i class="fas fa-box-open"></i><h3>Kemasan Higienis</h3><p>Dikemas dengan standar kebersihan tinggi.</p></div>
+            <div class="feature-card"><i class="fas fa-truck"></i><h3>Pengiriman Terkontrol</h3><p>Sistem pengiriman menjaga kualitas kue.</p></div>
+        </div>
+    </section>
+
+    <!-- CATALOG -->
+    <section id="catalog">
+        <h2 class="section-title">Koleksi Kue Kami</h2>
+        <div class="filter-tabs">
+            <button class="tab-btn active" data-filter="all">Semua</button>
+            <button class="tab-btn" data-filter="basah">Kue Basah</button>
+            <button class="tab-btn" data-filter="kering">Kue Kering</button>
+            <button class="tab-btn" data-filter="roti">Roti & Pastry</button>
+        </div>
+        <div class="products-grid" id="productsGrid">
+            <p class="loading">Memuat produk...</p>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials">
+        <h2 class="section-title">Apa Kata Mereka?</h2>
+        <div class="testi-grid" id="testiGrid"></div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>RiRa Cakes</h3>
+                <p>Menyajikan kebahagiaan dalam setiap gigitan.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="chat.html" aria-label="Chat dengan RiRa Cakes"><i class="fas fa-comments"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Jam Operasional</h3>
+                <p>Senin - Jumat: 08.00 - 20.00</p>
+                <p>Sabtu - Minggu: 09.00 - 21.00</p>
+            </div>
+            <div class="footer-col">
+                <h3>Hubungi Kami</h3>
+                <p><i class="fas fa-map-marker-alt"></i> Jl. Manis Legit No. 12, Jakarta</p>
+                <p><i class="fas fa-phone"></i> +62 812-1986-8390</p>
+                <p><i class="fas fa-envelope"></i> halo@riracakes.id</p>
+            </div>
+            <div class="footer-col">
+                <h3>Kebijakan</h3>
+                <a href="#">Syarat & Ketentuan</a>
+                <a href="#">Kebijakan Privasi</a>
+                <a href="#">FAQ</a>
+                <a href="#" onclick="openProofModal(); return false;">Unggah Bukti Transfer</a>
+                <a href="custom-cake.html">Pre-order Custom Cake</a>
+            </div>
+        </div>
+        <div class="copyright">&copy; 2026 RiRa Cakes Manis Legit. All Rights Reserved.</div>
+    </footer>
+
+    <!-- OVERLAY & CART SIDEBAR -->
+    <div class="overlay" id="overlay"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Keranjang Belanja</h2>
+            <button class="close-btn" id="closeCart">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-footer">
+            <div class="cart-total"><span>Total:</span><span id="cartTotal">Rp 0</span></div>
+            <button class="btn-checkout" id="btnCheckout">Lanjut ke Checkout</button>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div class="modal" id="checkoutModal">
+        <h2>Checkout Pesanan</h2>
+        <form id="checkoutForm">
+            <div class="form-group"><label>Nama Penerima</label><input type="text" id="coName" required></div>
+            <div class="form-group"><label>Nomor Telepon</label><input type="tel" id="coPhone" required></div>
+            <div class="form-group"><label>Email (opsional, untuk konfirmasi pesanan)</label><input type="email" id="coEmail" maxlength="150"></div>
+            <div class="form-group"><label>Alamat Lengkap</label><textarea id="coAddress" rows="3" required></textarea></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Metode Pengiriman</label>
+                    <select id="coShipping" required>
+                        <option value="instant">Instant (2-3 Jam) - Rp 25.000</option>
+                        <option value="sameday">Same Day - Rp 18.000</option>
+                        <option value="reguler">Reguler - Rp 12.000</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Metode Pembayaran</label>
+                    <select id="coPayment" required>
+                        <option value="qris">QRIS (GoPay, OVO, Dana)</option>
+                        <option value="transfer">Transfer Bank</option>
+                        <option value="cod">Bayar di Tempat (COD)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group"><label>Catatan</label><input type="text" id="coNotes" placeholder="Opsional"></div>
+            <div class="form-group">
+                <label for="voucherCode">Kode Promo</label>
+                <div style="display:flex;gap:10px;">
+                    <input type="text" id="voucherCode" maxlength="30" placeholder="Masukkan kode promo" autocomplete="off">
+                    <button type="button" class="btn btn-primary" id="applyVoucherBtn" style="white-space:nowrap;">Pakai Kode</button>
+                </div>
+                <p id="voucherMessage" role="status" style="margin-top:6px;font-size:0.85rem;"></p>
+            </div>
+            <div class="order-summary">
+                <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">Rp 0</span></div>
+                <div class="summary-row" id="summaryDiscountRow" style="display:none;color:#26733b;"><span>Diskon Voucher</span><span id="summaryDiscount">-Rp 0</span></div>
+                <div class="summary-row"><span>Ongkir</span><span id="summaryShipping">Rp 25.000</span></div>
+                <div class="summary-row total"><span>Total</span><span id="summaryTotal">Rp 0</span></div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:10px;">
+                <button type="button" id="checkoutCancel" class="btn" style="flex:1;background:#eee;color:#333;">Batal</button>
+                <button type="submit" class="btn-checkout" style="flex:2;">Konfirmasi Pesanan</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div class="modal" id="successModal" style="text-align: center;">
+        <i class="fas fa-check-circle" style="font-size: 4rem; color: #4CAF50;"></i>
+        <h2>Pesanan Berhasil!</h2>
+        <p id="successMsg">Terima kasih telah berbelanja.</p>
+        <button class="btn btn-primary" onclick="closeAllModals()">OK</button>
+    </div>
+
+    <!-- PAYMENT INSTRUCTION MODAL -->
+<div class="modal" id="paymentModal" style="max-width: 500px;">
+    <h2 id="paymentTitle">Instruksi Pembayaran</h2>
+    <div id="paymentContent"></div>
+    <div id="paymentProofPrompt" style="display:none;margin:15px 0;">
+        <p>Setelah melakukan transfer, unggah bukti pembayaran untuk pesanan ini.</p>
+        <button class="btn btn-primary" type="button" style="width:100%;margin-top:10px;" onclick="openProofModal()">
+            <i class="fas fa-upload"></i> Unggah Bukti Transfer
+        </button>
+    </div>
+    <a id="orderChatLink" class="btn btn-primary" href="chat.html" style="display:none;width:100%;text-align:center;margin:15px 0;">
+        <i class="fas fa-comments"></i> Lanjutkan percakapan di Chat
+    </a>
+    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.9rem;">
+        <i class="fas fa-info-circle"></i> Silakan lakukan pembayaran dalam <strong>24 jam</strong>. 
+        Pesanan akan otomatis dibatalkan jika tidak dibayar.
+    </div>
+    <button class="btn btn-primary" style="width:100%;" onclick="closeAllModals()">Saya Mengerti</button>
+</div>
+
+<div class="modal" id="proofModal" style="max-width:500px;">
+    <h2>Unggah Bukti Transfer</h2>
+    <p style="margin-bottom:15px;color:#6B5B5B;">Masukkan kode pesanan dan nomor telepon yang digunakan saat checkout.</p>
+    <form id="proofForm">
+        <div class="form-group">
+            <label for="proofOrderCode">Kode Pesanan</label>
+            <input type="text" id="proofOrderCode" required maxlength="20" placeholder="Contoh: RC20260927ABCDE">
+        </div>
+        <div class="form-group">
+            <label for="proofPhone">Nomor Telepon Customer</label>
+            <input type="tel" id="proofPhone" required maxlength="20" autocomplete="tel">
+        </div>
+        <div class="form-group">
+            <label for="proofImage">Foto bukti transfer (JPG, PNG, WEBP; maks. 5 MB)</label>
+            <input type="file" id="proofImage" accept="image/jpeg,image/png,image/webp" required>
+        </div>
+        <p id="proofMessage" role="status" style="margin-bottom:12px;"></p>
+        <div style="display:flex;gap:10px;">
+            <button class="btn" type="button" style="background:#eee;flex:1;" onclick="closeProofModal()">Batal</button>
+            <button class="btn btn-primary" id="proofSubmit" type="submit" style="flex:1;">Kirim Bukti</button>
+        </div>
+    </form>
+</div>
+
+<div class="modal" id="reviewModal" style="max-width:650px;">
+    <h2 id="reviewProductTitle">Rating &amp; Review Produk</h2>
+    <p id="reviewEligibilityMessage" class="review-eligibility-message" role="status"></p>
+    <div id="publicReviews" class="public-reviews"></div>
+    <form id="reviewForm" style="display:none;">
+        <h3>Tulis ulasan Anda</h3>
+        <div class="form-group">
+            <label for="reviewRating">Rating</label>
+            <select id="reviewRating" required>
+                <option value="5">5 - Sangat puas</option>
+                <option value="4">4 - Puas</option>
+                <option value="3">3 - Cukup</option>
+                <option value="2">2 - Kurang puas</option>
+                <option value="1">1 - Tidak puas</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="reviewText">Ulasan (10-2000 karakter)</label>
+            <textarea id="reviewText" minlength="10" maxlength="2000" rows="4" required></textarea>
+        </div>
+        <p id="reviewSubmitMessage" role="status"></p>
+        <button class="btn btn-primary" id="submitReview" type="submit">Kirim untuk Ditinjau</button>
+    </form>
+    <button class="btn" type="button" onclick="document.getElementById('reviewModal').classList.remove('active')" style="background:#eee;margin-top:15px;">Tutup</button>
+</div>
+
+<script src="js/script.js"></script>
+<script src="js/chat-unread.js" data-api="api/chat.php"></script>
+</body>
+</html>

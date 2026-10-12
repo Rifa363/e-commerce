@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Transaksi - RiRa Cakes</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="customer-orders-page">
+    <header>
+        <a href="index.html" class="logo">RiRa <span>Cakes</span></a>
+        <div class="orders-header-actions">
+            <a href="chat.html" class="btn btn-primary" data-chat-unread><i class="fas fa-comments"></i> Chat</a>
+            <a href="index.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Kembali Belanja</a>
+        </div>
+    </header>
+    <main class="customer-orders">
+        <h1>Riwayat Transaksi</h1>
+        <p class="orders-description">Lihat kembali pesanan, status pembayaran, dan detail produk yang pernah Anda beli.</p>
+        <div id="ordersMessage" class="orders-message" role="status">Memuat riwayat transaksi...</div>
+        <div id="ordersList" class="customer-orders-list"></div>
+    </main>
+    <script src="js/customer-orders.js"></script>
+    <script src="js/chat-unread.js" data-api="api/chat.php"></script>
+</body>
+</html>

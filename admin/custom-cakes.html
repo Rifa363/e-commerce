@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-order Custom Cake - Admin RiRa Cakes</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-logo">RiRa <span>Cakes</span></div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i> Produk</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Pesanan</a></li>
+                <li><a href="chat.html" data-chat-unread><i class="fas fa-comments"></i> Chat Customer</a></li>
+                <li><a href="vouchers.html"><i class="fas fa-ticket-alt"></i> Voucher</a></li>
+                <li><a href="custom-cakes.html" class="active"><i class="fas fa-birthday-cake"></i> Custom Cake</a></li>
+                <li><a href="reviews.html"><i class="fas fa-star"></i> Ulasan</a></li>
+                <li><a href="../index.html"><i class="fas fa-globe"></i> Lihat Website</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <div class="topbar">
+                <h1>Pre-order Custom Cake</h1>
+                <select id="customCakeStatusFilter" aria-label="Filter status" style="padding:8px;border:1px solid #ddd;border-radius:8px;">
+                    <option value="all">Semua Status</option>
+                    <option value="pending">Menunggu</option>
+                    <option value="quoted">Penawaran dikirim</option>
+                    <option value="confirmed">Dikonfirmasi</option>
+                    <option value="in_production">Sedang dibuat</option>
+                    <option value="ready">Siap</option>
+                    <option value="completed">Selesai</option>
+                    <option value="cancelled">Dibatalkan</option>
+                </select>
+            </div>
+            <p id="customCakeAdminMessage" role="status"></p>
+            <div id="customCakeAdminList" class="admin-custom-cake-list"></div>
+        </main>
+    </div>
+    <script>
+        const CUSTOM_CAKE_ADMIN_API = '../api/admin/custom_cakes.php';
+        const customCakeStatuses = {
+            pending: 'Menunggu peninjauan', quoted: 'Penawaran dikirim', confirmed: 'Dikonfirmasi',
+            in_production: 'Sedang dibuat', ready: 'Siap', completed: 'Selesai', cancelled: 'Dibatalkan'
+        };
+        let adminCustomCakes = [];
+
+        function textElement(tag, text, className = '') {
+            const element = document.createElement(tag);
+            element.textContent = text;
+            if (className) element.className = className;
+            return element;
+        }
+
+        async function customCakeRequest(method = 'GET', body = null) {
+            const response = await fetch(CUSTOM_CAKE_ADMIN_API, {
+                method, credentials: 'include',
+                headers: body ? { 'Content-Type': 'application/json' } : {},
+                body: body ? JSON.stringify(body) : undefined
+            });
+            const result = await response.json();
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = '../login.html';
+                throw new Error('Silakan masuk sebagai admin.');
+            }
+            if (!response.ok || !result.success) throw new Error(result.message || 'Pre-order gagal diproses.');
+            return result;
+        }
+
+        function renderCustomCakeOrder(order) {
+            const card = document.createElement('article');
+            card.className = 'card admin-custom-cake-card';
+            const header = document.createElement('div');
+            header.className = 'card-header';
+            const summary = document.createElement('div');
+            summary.append(
+                textElement('h2', `${order.order_code} · ${order.cake_type}`),
+                textElement('p', `${order.customer_name} · ${order.customer_email} · ${order.account_phone || '-'}`)
+            );
+            const status = textElement('span', customCakeStatuses[order.status] || order.status, 'badge badge-info');
+            header.append(summary, status);
+
+            const info = document.createElement('div');
+            info.className = 'admin-custom-cake-details';
+            [
+                `Acara: ${new Date(order.event_at.replace(' ', 'T')).toLocaleString('id-ID')}`,
+                `Porsi: ${order.servings}`,
+                `Rasa: ${order.flavor}`,
+                `Isian: ${order.filling || '-'}`,
+                `Frosting: ${order.frosting || '-'}`,
+                `Tulisan kue: ${order.cake_message || '-'}`,
+                `Alergi: ${order.allergies || '-'}`,
+                `Anggaran customer: ${order.budget ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Number(order.budget)) : '-'}`
+            ].forEach((line) => info.append(textElement('p', line)));
+            info.append(textElement('p', `Desain: ${order.design_description}`));
+            if (order.customer_notes) info.append(textElement('p', `Catatan customer: ${order.customer_notes}`));
+
+            const form = document.createElement('form');
+            form.className = 'admin-custom-cake-form';
+            form.dataset.orderId = order.id;
+            const statusLabel = textElement('label', 'Status');
+            const statusSelect = document.createElement('select');
+            statusSelect.name = 'status';
+            Object.entries(customCakeStatuses).forEach(([value, label]) => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = label;
+                option.selected = value === order.status;
+                statusSelect.append(option);
+            });
+            statusLabel.append(statusSelect);
+
+            const quoteLabel = textElement('label', 'Harga penawaran (Rp)');
+            const quoteInput = document.createElement('input');
+            quoteInput.type = 'number';
+            quoteInput.min = '0';
+            quoteInput.step = '1000';
+            quoteInput.name = 'admin_quote';
+            quoteInput.value = order.admin_quote ?? '';
+            quoteLabel.append(quoteInput);
+
+            const notesLabel = textElement('label', 'Catatan untuk customer');
+            const notesInput = document.createElement('textarea');
+            notesInput.name = 'admin_notes';
+            notesInput.maxLength = 2000;
+            notesInput.rows = 2;
+            notesInput.value = order.admin_notes || '';
+            notesLabel.append(notesInput);
+
+            const save = document.createElement('button');
+            save.className = 'btn btn-primary';
+            save.type = 'submit';
+            save.textContent = 'Simpan & Kirim Pembaruan';
+            const notification = textElement('p', '', 'admin-custom-cake-notice');
+            form.append(statusLabel, quoteLabel, notesLabel, save, notification);
+            card.append(header, info, form);
+            return card;
+        }
+
+        async function loadCustomCakeOrders() {
+            const status = document.getElementById('customCakeStatusFilter').value;
+            const message = document.getElementById('customCakeAdminMessage');
+            try {
+                const result = await customCakeRequest('GET');
+                adminCustomCakes = result.data;
+                const selected = status === 'all' ? adminCustomCakes : adminCustomCakes.filter((order) => order.status === status);
+                document.getElementById('customCakeAdminList').replaceChildren(...selected.map(renderCustomCakeOrder));
+                message.textContent = selected.length ? '' : 'Tidak ada pre-order pada filter ini.';
+            } catch (error) {
+                message.textContent = error.message;
+            }
+        }
+
+        document.getElementById('customCakeStatusFilter').addEventListener('change', loadCustomCakeOrders);
+        document.getElementById('customCakeAdminList').addEventListener('submit', async (event) => {
+            if (!event.target.matches('.admin-custom-cake-form')) return;
+            event.preventDefault();
+            const form = event.target;
+            const data = new FormData(form);
+            const notice = form.querySelector('.admin-custom-cake-notice');
+            const button = form.querySelector('button');
+            button.disabled = true;
+            notice.textContent = 'Menyimpan...';
+            try {
+                const result = await customCakeRequest('PUT', {
+                    id: Number(form.dataset.orderId),
+                    status: data.get('status'),
+                    admin_quote: data.get('admin_quote'),
+                    admin_notes: data.get('admin_notes')
+                });
+                notice.textContent = `${result.message} Email customer ${result.email_sent ? 'terkirim' : 'belum terkirim (periksa konfigurasi email)'}.`;
+                await loadCustomCakeOrders();
+            } catch (error) {
+                notice.textContent = error.message;
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        loadCustomCakeOrders();
+    </script>
+    <script src="../js/chat-unread.js" data-api="../api/chat.php"></script>
+</body>
+</html>

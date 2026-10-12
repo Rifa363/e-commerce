@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Customer - Admin RiRa Cakes</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/chat.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-logo">RiRa <span>Cakes</span></div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i> Produk</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Pesanan</a></li>
+                <li><a href="vouchers.html"><i class="fas fa-ticket-alt"></i> Voucher</a></li>
+                <li><a href="custom-cakes.html"><i class="fas fa-birthday-cake"></i> Custom Cake</a></li>
+                <li><a href="reviews.html"><i class="fas fa-star"></i> Ulasan</a></li>
+                <li><a href="chat.html" class="active" data-chat-unread><i class="fas fa-comments"></i> Chat Customer</a></li>
+                <li><a href="../index.html" target="_blank"><i class="fas fa-globe"></i> Lihat Website</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <div class="topbar">
+                <h1>Chat Customer</h1>
+                <button class="btn-logout" id="chatLogout" type="button"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+            <div id="chatNotice" class="orders-message" role="status">Memuat percakapan...</div>
+            <section class="chat-admin-layout" data-api="../api/chat.php" data-auth-api="../api/auth.php" data-role="admin">
+                <aside id="chatConversationList" class="chat-conversations" aria-label="Daftar customer"></aside>
+                <div class="chat-panel">
+                    <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+                    <form id="chatForm" class="chat-compose">
+                        <label class="visually-hidden" for="chatInput">Tulis balasan</label>
+                        <textarea id="chatInput" maxlength="2000" rows="2" placeholder="Pilih percakapan untuk membalas..." disabled></textarea>
+                        <label class="chat-attach-button btn" for="chatImage"><i class="fas fa-image"></i> Foto</label>
+                        <input id="chatImage" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" disabled>
+                        <button type="submit" class="btn btn-primary" disabled><i class="fas fa-paper-plane"></i> Kirim</button>
+                    </form>
+                    <p id="chatImageStatus" class="chat-image-status" aria-live="polite">Format foto JPG, PNG, atau WEBP; maksimal 5 MB.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="../js/chat.js"></script>
+    <script src="../js/chat-unread.js" data-api="../api/chat.php"></script>
+</body>
+</html>

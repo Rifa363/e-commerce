@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderasi Ulasan - Admin RiRa Cakes</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-logo">RiRa <span>Cakes</span></div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i> Produk</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Pesanan</a></li>
+                <li><a href="chat.html" data-chat-unread><i class="fas fa-comments"></i> Chat Customer</a></li>
+                <li><a href="vouchers.html"><i class="fas fa-ticket-alt"></i> Voucher</a></li>
+                <li><a href="custom-cakes.html"><i class="fas fa-birthday-cake"></i> Custom Cake</a></li>
+                <li><a href="reviews.html" class="active"><i class="fas fa-star"></i> Ulasan</a></li>
+                <li><a href="../index.html"><i class="fas fa-globe"></i> Lihat Website</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <div class="topbar">
+                <h1>Moderasi Rating &amp; Review</h1>
+                <select id="reviewStatusFilter" aria-label="Filter status ulasan" style="padding:8px;border:1px solid #ddd;border-radius:8px;">
+                    <option value="pending">Menunggu</option>
+                    <option value="all">Semua</option>
+                    <option value="approved">Disetujui</option>
+                    <option value="rejected">Ditolak</option>
+                </select>
+            </div>
+            <p id="reviewAdminMessage" role="status"></p>
+            <div id="reviewAdminList" class="admin-review-list"></div>
+        </main>
+    </div>
+    <script>
+        const REVIEW_ADMIN_API = '../api/admin/reviews.php';
+        async function reviewAdminRequest(url, options = {}) {
+            const response = await fetch(url, { credentials: 'include', ...options });
+            const result = await response.json();
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = '../login.html';
+                throw new Error('Silakan masuk sebagai admin.');
+            }
+            if (!response.ok || !result.success) throw new Error(result.message || 'Ulasan gagal diproses.');
+            return result;
+        }
+
+        function renderReview(review) {
+            const card = document.createElement('article');
+            card.className = 'card admin-review-card';
+            const header = document.createElement('div');
+            header.className = 'card-header';
+            const product = document.createElement('div');
+            const title = document.createElement('h2');
+            title.textContent = review.product_name;
+            const customer = document.createElement('p');
+            customer.textContent = `${review.customer_name} · ${review.customer_email} · ${new Date(review.created_at.replace(' ', 'T')).toLocaleString('id-ID')}`;
+            product.append(title, customer);
+            const stars = document.createElement('strong');
+            stars.className = 'review-stars';
+            stars.textContent = `${'★'.repeat(Number(review.rating))}${'☆'.repeat(5 - Number(review.rating))}`;
+            header.append(product, stars);
+            const text = document.createElement('p');
+            text.className = 'admin-review-text';
+            text.textContent = review.review;
+            const footer = document.createElement('div');
+            footer.className = 'admin-review-actions';
+            footer.append(document.createTextNode(`Status: ${review.status}`));
+            if (review.status === 'pending') {
+                ['approved', 'rejected'].forEach((status) => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = `btn btn-sm ${status === 'approved' ? 'btn-success' : 'btn-danger'}`;
+                    button.dataset.reviewId = review.id;
+                    button.dataset.reviewStatus = status;
+                    button.textContent = status === 'approved' ? 'Setujui' : 'Tolak';
+                    footer.append(button);
+                });
+            }
+            card.append(header, text, footer);
+            return card;
+        }
+
+        async function loadReviews() {
+            const status = document.getElementById('reviewStatusFilter').value;
+            const message = document.getElementById('reviewAdminMessage');
+            try {
+                const result = await reviewAdminRequest(`${REVIEW_ADMIN_API}?status=${encodeURIComponent(status)}`);
+                document.getElementById('reviewAdminList').replaceChildren(...result.data.map(renderReview));
+                message.textContent = result.data.length ? '' : 'Tidak ada ulasan pada filter ini.';
+            } catch (error) {
+                message.textContent = error.message;
+            }
+        }
+
+        document.getElementById('reviewStatusFilter').addEventListener('change', loadReviews);
+        document.getElementById('reviewAdminList').addEventListener('click', async (event) => {
+            const button = event.target.closest('[data-review-id]');
+            if (!button) return;
+            button.disabled = true;
+            try {
+                await reviewAdminRequest(REVIEW_ADMIN_API, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: Number(button.dataset.reviewId), status: button.dataset.reviewStatus })
+                });
+                await loadReviews();
+            } catch (error) {
+                document.getElementById('reviewAdminMessage').textContent = error.message;
+                button.disabled = false;
+            }
+        });
+        loadReviews();
+    </script>
+    <script src="../js/chat-unread.js" data-api="../api/chat.php"></script>
+</body>
+</html>
