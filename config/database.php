@@ -1,11 +1,21 @@
 <?php
 // Konfigurasi koneksi database menggunakan PDO (aman dari SQL Injection)
+// Nilai dibaca dari environment (.env di root project) dengan fallback lokal.
+require_once __DIR__ . '/env.php';
+
 class Database {
-    private $host = "localhost";
-    private $db_name = "manis_legit_db";
-    private $username = "root";        // Ganti dengan username MySQL Anda
-    private $password = "";            // Ganti dengan password MySQL Anda
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
     private $conn;
+
+    public function __construct() {
+        $this->host     = getenv('DB_HOST') ?: 'localhost';
+        $this->db_name  = getenv('DB_NAME') ?: 'manis_legit_db';
+        $this->username = getenv('DB_USER') ?: 'root';
+        $this->password = getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '';
+    }
 
     public function getConnection() {
         $this->conn = null;

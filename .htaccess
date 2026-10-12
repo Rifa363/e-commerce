@@ -1,0 +1,25 @@
+# ============================================================
+# RiRa Cakes - Apache/LiteSpeed (shared hosting: cPanel/Hostinger)
+# ============================================================
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Blokir akses langsung via web ke folder sensitif
+    RewriteRule ^(config|database|vendor|docs)/ - [F,L]
+    RewriteRule ^\.git(/|$) - [F,L]
+    RewriteRule ^\.env - [F,L]
+    RewriteRule ^composer\.(json|lock)$ - [F,L]
+    RewriteRule ^package(-lock)?\.json$ - [F,L]
+
+    # ----- Uncomment setelah SSL aktif (gratis di kebanyakan hosting) -----
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Fallback jika mod_rewrite tidak tersedia
+<FilesMatch "^(\.env.*|composer\.(json|lock))$">
+    Require all denied
+</FilesMatch>

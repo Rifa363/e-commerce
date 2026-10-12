@@ -2,6 +2,7 @@
 /.vscode/
 .env
 .env.*
+!.env.example
 
 /uploads/payment-proofs/*
 !/uploads/payment-proofs/.htaccess

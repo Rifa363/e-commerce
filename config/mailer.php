@@ -1,5 +1,10 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/env.php';
+
+$autoloadPath = __DIR__ . '/../vendor/autoload.php';
+if (is_file($autoloadPath)) {
+    require_once $autoloadPath;
+}
 
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -19,6 +24,11 @@ function sendConfiguredEmail($recipient, $recipientName, $subject, $htmlBody, $t
             error_log('Email notification is not configured: missing ' . $setting);
             return false;
         }
+    }
+
+    if (!class_exists(PHPMailer::class)) {
+        error_log('Email notification is not configured: PHPMailer missing. Run "composer install" on the server.');
+        return false;
     }
 
     try {
